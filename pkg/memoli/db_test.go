@@ -2,7 +2,6 @@ package memoli
 
 import (
 	"github.com/stretchr/testify/assert"
-	"sync"
 	"testing"
 	"time"
 )
@@ -81,7 +80,6 @@ func TestBucket_rsync(t *testing.T) {
 		snapshotPath   string
 		mm             map[string]interface{}
 		closec         chan struct{}
-		RWMutex        sync.RWMutex
 	}
 	tests := []struct {
 		name    string
@@ -91,23 +89,22 @@ func TestBucket_rsync(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			name: "rsync without error",
-            fields: fields{
-                bucketName:     "zeyno",
-                snapshotWindow: time.NewTicker(time.Second),
-                snapshotPath:   "/tmp/memo",
-                mm:             map[string]interface{}{},
-                closec:         make(chan struct{}, 1),
-                RWMutex:        sync.RWMutex{},
-            },
-            wantErr: false,
+			fields: fields{
+				bucketName:     "zeyno",
+				snapshotWindow: time.NewTicker(time.Second),
+				snapshotPath:   "/tmp/memo",
+				mm:             map[string]interface{}{},
+				closec:         make(chan struct{}, 1),
+			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			b := &Bucket{
-				bucketName:     tt.fields.bucketName,
-				snapshotPath:   tt.fields.snapshotPath,
-				mm:             tt.fields.mm,
+				bucketName:   tt.fields.bucketName,
+				snapshotPath: tt.fields.snapshotPath,
+				mm:           tt.fields.mm,
 			}
 			err := writeTo(b.pathToFile(), map[string]interface{}{"key": "value"})
 			if err != nil {
@@ -131,7 +128,7 @@ func TestBucket_wsync(t *testing.T) {
 	go b.wsync()
 	for {
 		select {
-		case <-time.Tick(time.Second*2):
+		case <-time.Tick(time.Second * 2):
 			t.Fatal("Bucket.Close() did not close the channel")
 		case <-done:
 			return

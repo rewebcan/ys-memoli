@@ -12,12 +12,12 @@ type StoreSettingRequest struct {
 
 func (ssr *StoreSettingRequest) Validate() error {
 	return validation.ValidateStruct(ssr,
-        validation.Field(&ssr.Key, validation.Required),
-        validation.Field(&ssr.Value, validation.Required),
-    )
+		validation.Field(&ssr.Key, validation.Required),
+		validation.Field(&ssr.Value, validation.Required),
+	)
 }
 
 type SettingsResponse struct {
-    Key   string `json:"key"`
-    Value string `json:"value"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
