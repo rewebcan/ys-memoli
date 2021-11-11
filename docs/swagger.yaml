@@ -1,0 +1,116 @@
+basePath: /
+definitions:
+  entity.SettingsResponse:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    type: object
+  entity.StoreSettingRequest:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+    type: object
+  v1.errResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  v1.successResponse:
+    properties:
+      data:
+        type: object
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: YS Case Study
+  version: "1.0"
+paths:
+  /api/v1/settings:
+    put:
+      consumes:
+      - application/json
+      description: An example of how to use memoliDB, to set a setting with a key
+        and value
+      operationId: setSetting
+      parameters:
+      - description: Setting
+        in: body
+        name: setting
+        required: true
+        schema:
+          $ref: '#/definitions/entity.StoreSettingRequest'
+      responses:
+        "204":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/v1.errResponse'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - $ref: '#/definitions/v1.errResponse'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/v1.errResponse'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Set a setting
+      tags:
+      - setSetting
+  /api/v1/settings/{key}:
+    get:
+      description: An example of how to use memoliDB, to get a setting value with
+        a key
+      operationId: getSetting
+      parameters:
+      - description: Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/v1.successResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.SettingsResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/v1.errResponse'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Get a setting value from key
+      tags:
+      - getSetting
+swagger: "2.0"
